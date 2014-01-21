@@ -36,12 +36,6 @@ void main() {
     *prog = (int)cfaStart;
     *(prog + 1) = (int)cfaStart;
     WPtr = prog;
-
-    int *num = (int*)malloc(sizeof(int));
-    // *num = 101010;
-    // printf("num =%d\n", num);
-    // printf("*num =%d\n", *num);
-    // pushSD((int)num);
     // --------------------------------------
     printf("====================\n");
     printf("===== FORTH ========\n");
@@ -65,30 +59,15 @@ void main() {
         if(step == 5) break;
 #endif
     }
+    printf("\n========== FINISH ===========\n");
 // для тестирования
     int data = popSD();
     printf("data = %d\n", data);
     printf("*PtrVoc = %d\n", *(PtrVoc-1));
-//    interpret();
+    interpret();
     printf("\n=============================\n");
-    printf("Nfa = %d\n", Nfa);
-    int *ptr = (int *)Nfa;
-    printf("*Nfa = %d\n", *ptr);
-    
-    char bbbb[2];
-    while(ptr != 0) {
-        int nNameWrd = *ptr - 80;
-        printf("nNameWrd = %d\n next?.", nNameWrd);
-        fgets(bbbb, 2, stdin);
-        for( int i = 1; i < nNameWrd + 1; i++) {
-            printf("%c", *(++ptr));
-        }
-        printf("|\n");
-        ptr++;
-        ptr = (int*)(*ptr);
-//        printf("ptr = %d\n", ptr);
-//        fgets(bbbb, 2, stdin);
-    }
+
+
 }
 
 

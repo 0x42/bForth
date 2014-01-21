@@ -7,6 +7,9 @@
 int NTIB = 100; // #TIB
 char *TIB;      // 100 байт
 //===============================================
+// 0 - режим интерпритации
+// 1 - режим компиляции
+int STATE = 0; 
 int* WPtr = 0;
 int* Ptr = 0;
 int* Ptr2 = 0;
@@ -24,25 +27,30 @@ int* crtVoc() {
 //================================================
 //     Создание слова
 //================================================
-int* crtWord(int _n, char *_name, int* _cfa, int _n_pfa, void(**_pfa)() ) {
+int* crtWord(int _n, char *_name, int flag, int* _cfa, int _n_pfa, void(**_pfa)() ) {
     static int first_word = 1;
-printf("PtrVoc = %d\n", PtrVoc);
+//printf("PtrVoc = %d\n", PtrVoc);
     *PtrVoc = 80 + _n;
     int nfa =(int)PtrVoc;
     PtrVoc++;
-printf("name -> ");
+//printf("name -> ");
     for(int i = 0; i < _n ; i++ ) {
         *PtrVoc = _name[i];
-printf("%c", _name[i]);
+//printf("%c", _name[i]);
         PtrVoc++;
     }
-printf("\n");
+//printf("\n");
+// записываем флаг 1 - IMMEDIATE(немедленное исполнение) 
+//                 0 - обычное слово
+    *PtrVoc = flag;
+    PtrVoc++; 
     if(first_word == 1) {
         first_word = 0;
         *PtrVoc = 0;
     } else {
         *PtrVoc = Nfa;
     }
+
     PtrVoc++;
     Nfa = nfa;
     if(_cfa == 0) {

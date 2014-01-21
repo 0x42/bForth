@@ -15,7 +15,9 @@ int* crtTEST() {
     int n_pfa = 1;
     void (**pfa)() = (void(**)())malloc(n_pfa*sizeof(void(*)()));
     *pfa = test;
-    int *cfa = crtWord(2, "TEST", 0, n_pfa, pfa);
+    // 1 - IMMEDIATE 0 -SIMPLE
+    int flag_exec = 0;
+    int *cfa = crtWord(4, "TEST", flag_exec, 0, n_pfa, pfa);
     return cfa;
 }
 void test1() {
@@ -26,7 +28,9 @@ int* crtTEST1() {
     int n_pfa = 1;
     void (**pfa)() = (void(**)())malloc(n_pfa*sizeof(void(*)()));
     *pfa = test1;
-    int *cfa = crtWord(2, "TEST1", 0, n_pfa, pfa);
+    // 1 - IMMEDIATE 0 -SIMPLE
+    int flag_exec = 0;
+    int *cfa = crtWord(5, "TEST1", flag_exec, 0, n_pfa, pfa);
     return cfa;
 }
 void test2() {
@@ -38,7 +42,9 @@ int* crtTEST2() {
     int n_pfa = 1;
     void (**pfa)() = (void(**)())malloc(n_pfa*sizeof(void(*)()));
     *pfa = test2;
-    int *cfa = crtWord(2, "TEST2", 0, n_pfa, pfa);
+        // 1 - IMMEDIATE 0 -SIMPLE
+    int flag_exec = 0;
+    int *cfa = crtWord(5, "TEST2", flag_exec, 0, n_pfa, pfa);
     return cfa;
 }
 // Тестовое слово для проверки адресн интерпр
@@ -49,7 +55,9 @@ int* crtGOTEST(int *w1, int *w2, int *w3, int *w4) {
     *pfa = (void(*)())w2;
     *(pfa + 1) = (void(*)())w3;
     *(pfa + 2) = (void(*)())w4;
-    int *cfa = crtWord(6, "GOTEST", (int *)w1, n_pfa, pfa);
+        // 1 - IMMEDIATE 0 -SIMPLE
+    int flag_exec = 0;
+    int *cfa = crtWord(6, "GOTEST", flag_exec, (int *)w1, n_pfa, pfa);
     return cfa;
 }
 // ====================================================

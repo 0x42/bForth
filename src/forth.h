@@ -21,7 +21,8 @@ int* crtOnR() {
     int n_pfa = 1;
     void (**pfa)() = (void(**)())malloc(n_pfa*sizeof(void(*)()));
     *pfa = onR;
-    int *cfa = crtWord(2, ">R", 0, n_pfa, pfa);
+    int flag_exec = 0;
+    int *cfa = crtWord(2, ">R", flag_exec, 0, n_pfa, pfa);
     return cfa;
 }
 // ====================================================
@@ -37,7 +38,8 @@ int* crtFromR() {
     int n_pfa = 1;
     void (**pfa)() = (void(**)())malloc(n_pfa*sizeof(void(*)()));
     *pfa = fromR;
-    int *cfa = crtWord(2, "R>", 0, n_pfa, pfa);
+    int flag_exec = 0;
+    int *cfa = crtWord(2, "R>", flag_exec, 0, n_pfa, pfa);
     return cfa;
 }
 // ====================================================
@@ -54,7 +56,9 @@ int* crtRcopy() {
     int n_pfa = 1;
     void (**pfa)() = (void(**)())malloc(n_pfa*sizeof(void(*)()));
     *pfa = RCopy;
-    int *cfa = crtWord(2, "R@", 0, n_pfa, pfa);
+    // 1 - IMMEDIATE 0 -SIMPLE
+    int flag_exec = 0;
+    int *cfa = crtWord(2, "R@", flag_exec, 0, n_pfa, pfa);
     return cfa;
 }
 // ====================================================
@@ -70,7 +74,9 @@ int* crt_From() {
     int n_pfa = 1;
     void (**pfa)() = (void(**)())malloc(n_pfa*sizeof(void(*)()));
     *pfa = _From;
-    int *cfa = crtWord(1, "@", 0, n_pfa, pfa);
+    // 1 - IMMEDIATE 0 -SIMPLE
+    int flag_exec = 0;
+    int *cfa = crtWord(1, "@", flag_exec, 0, n_pfa, pfa);
     return cfa;
 }
 // ====================================================
@@ -89,7 +95,9 @@ int* crtLIT() {
     int n_pfa = 1;
     void (**pfa)() = (void(**)())malloc(n_pfa*sizeof(void(*)()));
     *pfa = Lit;
-    int *cfa = crtWord(3, "LIT", 0, n_pfa, pfa);
+    // 1 - IMMEDIATE 0 -SIMPLE
+    int flag_exec = 0;
+    int *cfa = crtWord(3, "LIT", flag_exec, 0, n_pfa, pfa);
     return cfa;
 }
 // ====================================================
@@ -109,7 +117,9 @@ int* crtBRANCH() {
     int n_pfa = 1;
     void (**pfa)() = (void(**)())malloc(n_pfa*sizeof(void(*)()));
     *pfa = Branch;
-    int *cfa = crtWord(6, "Branch", 0, n_pfa, pfa);
+    // 1 - IMMEDIATE 0 -SIMPLE
+    int flag_exec = 0;
+    int *cfa = crtWord(6, "Branch", flag_exec, 0, n_pfa, pfa);
     return cfa;
 }
 // ====================================================
@@ -132,7 +142,9 @@ int* crtOBRANCH() {
     int n_pfa = 1;
     void (**pfa)() = (void(**)())malloc(n_pfa*sizeof(void(*)()));
     *pfa = OBranch;
-    int *cfa = crtWord(7, "?BRANCH", 0, n_pfa, pfa);
+    // 1 - IMMEDIATE 0 -SIMPLE
+    int flag_exec = 0;
+    int *cfa = crtWord(7, "?BRANCH", flag_exec, 0, n_pfa, pfa);
     return cfa;
 }
 // ====================================================
@@ -147,7 +159,9 @@ int* crtHERE() {
     int n_pfa = 1;
     void (**pfa)() = (void(**)())malloc(n_pfa*sizeof(void(*)()));
     *pfa = Here;
-    int *cfa = crtWord(4, "HERE", 0, n_pfa, pfa);
+    // 1 - IMMEDIATE 0 -SIMPLE
+    int flag_exec = 0;
+    int *cfa = crtWord(4, "HERE", flag_exec, 0, n_pfa, pfa);
     return cfa;
 }
 // ====================================================
@@ -164,7 +178,9 @@ int* crtALLOT() {
     int n_pfa = 1;
     void (**pfa)() = (void(**)())malloc(n_pfa*sizeof(void(*)()));
     *pfa = Allot;
-    int *cfa = crtWord(5, "ALLOT", 0, n_pfa, pfa);
+        // 1 - IMMEDIATE 0 -SIMPLE
+    int flag_exec = 0;
+    int *cfa = crtWord(5, "ALLOT", flag_exec, 0, n_pfa, pfa);
     return cfa;
 }
 // ====================================================
@@ -182,7 +198,9 @@ int* crtCOMMA() {
     int n_pfa = 1;
     void (**pfa)() = (void(**)())malloc(n_pfa*sizeof(void(*)()));
     *pfa = Comma;
-    int *cfa = crtWord(1, ",", 0, n_pfa, pfa);
+    // 1 - IMMEDIATE 0 -SIMPLE
+    int flag_exec = 0;
+    int *cfa = crtWord(1, ",", flag_exec, 0, n_pfa, pfa);
     return cfa;
 }
 // ====================================================
@@ -200,7 +218,9 @@ int* crtCOMPILE() {
     int n_pfa = 1;
     void (**pfa)() = (void(**)())malloc(n_pfa*sizeof(void(*)()));
     *pfa = Compile;
-    int *cfa = crtWord(7, "COMPILE", 0, n_pfa, pfa);
+    // 1 - IMMEDIATE 0 -SIMPLE
+    int flag_exec = 0;
+    int *cfa = crtWord(7, "COMPILE", flag_exec, 0, n_pfa, pfa);
     return cfa;
 }
 // ====================================================
@@ -222,7 +242,9 @@ int* crtS_() {
     int n_pfa = 1;
     void (**pfa)() = (void(**)())malloc(n_pfa*sizeof(void(*)()));
     *pfa = s_;
-    int *cfa = crtWord(2, "S:", (int*)s_, 0, 0);
+    // 1 - IMMEDIATE 0 -SIMPLE
+    int flag_exec = 0;
+    int *cfa = crtWord(2, "S:", flag_exec, (int*)s_, 0, 0);
     return cfa;
 }
 // ====================================================
@@ -237,7 +259,9 @@ int *crt_S() {
     int n_pfa = 1;
     void (**pfa)() = (void(**)())malloc(n_pfa*sizeof(void(*)()));
     *pfa = _s;
-    int *cfa = crtWord(2, "S;", 0, n_pfa, pfa);
+    // 1 - IMMEDIATE 0 -SIMPLE
+    int flag_exec = 0;
+    int *cfa = crtWord(2, "S;", flag_exec, 0, n_pfa, pfa);
     return cfa;
 }
 
@@ -253,7 +277,9 @@ int* crtStart(int* w1, int* w2, int* w3) {
     *pfa = (void(*)())w2;
     *(pfa + 1) = (void(*)())w3;
 //    *(pfa + 2) = (void(*)())w3;
-    int *cfa = crtWord(5, "START", (int*)w1, n_pfa, pfa);
+        // 1 - IMMEDIATE 0 -SIMPLE
+    int flag_exec = 0;
+    int *cfa = crtWord(5, "START", flag_exec, (int*)w1, n_pfa, pfa);
     return cfa;
 }
 // ====================================================
