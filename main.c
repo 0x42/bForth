@@ -87,8 +87,7 @@ void main() {
         ptr++;
         ptr = (int*)(*ptr);
         printf("ptr = %d\n", ptr);
-        printf("*ptr = %d\n", *ptr);
-        fgets(bbbb, 2, stdin);
+//        fgets(bbbb, 2, stdin);
     }
 }
 
