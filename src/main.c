@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include "voc.h"
 #include "forth.h"
 #include "testwrd.h"
@@ -61,13 +62,18 @@ void main() {
     }
     printf("\n========== FINISH ===========\n");
 // для тестирования
-    int data = popSD();
-    printf("data = %d\n", data);
-    printf("*PtrVoc = %d\n", *(PtrVoc-1));
-    interpret();
+//    int data = popSD();
+//    printf("data = %d\n", data);
+//    printf("*PtrVoc = %d\n", *(PtrVoc-1));
+    char *num = "10";
+    int nnn = (int) 
+    if( scanf("%d", num) == 1) {
+        printf("число\n");
+    } else {
+        printf("не число\n");
+    }
+    //interpret();
     printf("\n=============================\n");
-
-
 }
 
 

@@ -18,12 +18,17 @@ struct Ans {
 extern void readWords();
 extern _Bool findVoc(int, int, struct Ans*);
 extern void execWrd(char*, int*);
+extern void compileWrd(char*, int*);
+extern _Bool checkWrd(int, int, struct Ans*);
+
 void interpret() {
-    printf("> ");
-    if(fgets(TIB, NTIB, stdin) != NULL) {
-        readWords();
-    } else {
-        printf("ERROR\n");
+    while(1) {
+        printf("> ");
+        if(fgets(TIB, NTIB, stdin) != NULL) {
+            readWords();
+        } else {
+            printf("ERROR\n");
+        }
     }
 }
 // Читает слово в входном потоке-> ищет в словаре еслли находит исполняет если не находит
@@ -36,13 +41,16 @@ void readWords() {
     for(int i = 0; i < NTIB; i++) {
         if( *(TIB + i) == '\n') {
             if( lenWord > 0) {
-                if(*(TIB + i) != ' ') findVoc(startWord, lenWord, result);
+                if(*(TIB + i) != ' ') 
+                    if( checkWrd(startWord, lenWord, result) == 0) break;
+                //findVoc(startWord, lenWord, result);
             }
             break;
         }
         if(*(TIB + i) == ' ') {
             if( lenWord != 0) {
-                findVoc(startWord, lenWord, result);
+                if(checkWrd(startWord, lenWord, result) == 0) break;
+                //findVoc(startWord, lenWord, result);
                 printf("\n");
             }
             startWord = i + 1;
@@ -51,6 +59,19 @@ void readWords() {
     }
 }
 
+_Bool checkWrd(int startWord, int lenWord, struct Ans *result) {
+    _Bool find = findVoc(startWord, lenWord, result);
+    if(find == 0) {
+        printf("%s\n", "Поверка число ли это");
+        printf("слово не найдено\n");
+        return 0;
+    } else {
+        printf("OK\n");
+        return 1;
+    }
+}
+// 0 - не найдено в словаре
+// 1 - найдено
 _Bool findVoc(int startWord, int lenWord, struct Ans *result) {
     _Bool ans = 0;
     int endWord = startWord + lenWord;
@@ -96,26 +117,38 @@ _Bool findVoc(int startWord, int lenWord, struct Ans *result) {
         ptr = (int*)(*ptr); // берем поле c NFA след слова
     }
     if (flgFind == 1) {
-        printf("[%s]find in voc\n", word);
-        int *cfa  =(int *) *(ptr + nNameWrd + 2);
-        printf("ptr = %d\n", cfa);
-        printf("flag = %d\n", *(ptr + nNameWrd + 1 ));
-        execWrd(word, cfa);
+//        printf("[%s]find in voc\n", word);
+        int *cfa  = (ptr + nNameWrd + 3);
+        // printf("cfa = %d\n", cfa);
+        // printf("*cfa = %d\n", *cfa);
+        int *pfa = (int *) *cfa;
+        // printf("*pfa = %d\n", *pfa);
+        // printf("test() = %d\n", test);
+        if( STATE == 0) execWrd(word, cfa);
+        else if (STATE == 1) compileWrd(word, cfa);
         ans = 1;
     } else {
-        printf("[%s] doesn't find in voc\n", word);
+//        printf("[%s] doesn't find in voc\n", word);
         ans = 0;
     }
     return ans;
 }
 // исполняем слово простое
 void execWrd(char *name, int *cfa) {
-    printf("execWrd %s :cfa = %d/n", name, cfa);
-/*    WPtr = cfa;
-    Ptr = (int*)*WPtr;
+    //printf("%s -> execute\n", name);
+    //printf("execWrd %s :cfa = %d/n", name, cfa);
+    //WPtr = cfa;
+   // Ptr = (int*)*WPtr;
+    Ptr = cfa;
+    //printf("Ptr = %d\n", Ptr);
     Ptr2 = (int *)*Ptr;
+    //printf("Ptr2 = %d\n", Ptr2);
     Call = (void(*)())*Ptr2;
+    //printf("Call = %d\n", Call);
     Call();
-    */
+}
+// компилируем слово
+void compileWrd(char *name, int*cfa) {
+        printf("compileWrd %s :cfa = %d/n", name, cfa);
 }
 #endif

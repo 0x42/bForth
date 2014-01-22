@@ -39,20 +39,25 @@ int* crtWord(int _n, char *_name, int flag, int* _cfa, int _n_pfa, void(**_pfa)(
 //printf("%c", _name[i]);
         PtrVoc++;
     }
+    int FLAG = -1;
+    if(_n == 4) FLAG = memcmp(_name, "TEST", 4);
+    if(FLAG == 0) printf("TEST\n");
 //printf("\n");
 // записываем флаг 1 - IMMEDIATE(немедленное исполнение) 
 //                 0 - обычное слово
+    if(FLAG == 0) printf("ptr Flag = %d\n", PtrVoc);
     *PtrVoc = flag;
     PtrVoc++; 
+    if(FLAG == 0) printf("ptr Nfa = %d\n", PtrVoc);
     if(first_word == 1) {
         first_word = 0;
         *PtrVoc = 0;
     } else {
         *PtrVoc = Nfa;
     }
-
     PtrVoc++;
     Nfa = nfa;
+    if(FLAG == 0) printf("ptr CFA = %d\n", PtrVoc);
     if(_cfa == 0) {
         *PtrVoc = (int)(PtrVoc + 1);
        // printf("%d\n",);
