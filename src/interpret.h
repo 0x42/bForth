@@ -49,7 +49,10 @@ void readWords() {
         }
         if(*(TIB + i) == ' ') {
             if( lenWord != 0) {
-                if(checkWrd(startWord, lenWord, result) == 0) break;
+                if(checkWrd(startWord, lenWord, result) == 0) {
+                    setError();
+                    break;
+                }
                 //findVoc(startWord, lenWord, result);
                 printf("\n");
             }
@@ -58,15 +61,27 @@ void readWords() {
         } else lenWord++;
     }
 }
-
+// 0 - false
+// 1 - true
 _Bool checkWrd(int startWord, int lenWord, struct Ans *result) {
     _Bool find = findVoc(startWord, lenWord, result);
     if(find == 0) {
-        printf("%s\n", "Поверка число ли это");
-        printf("слово не найдено\n");
-        return 0;
+        printf("%s\n", "Проверка число ли это");
+        char num_str[lenWord];
+        char *err;
+        int *num;
+        for(int i = 0; i < lenWord; i++) {
+            num_str[i] = *(TIB + startWord + i);
+        }
+        // проверяем число это или нет если число то кладем на стек
+        num = (int) strtol(num_str, &err, 10);
+        if(strlen(err) > 0) {
+            return 0;
+        } else {
+            pushSD(num);
+            return 1;
+        }
     } else {
-        printf("OK\n");
         return 1;
     }
 }
@@ -82,12 +97,9 @@ _Bool findVoc(int startWord, int lenWord, struct Ans *result) {
         *(word + i) = *(TIB + startWord);
         i++;
     }
-//    printf("search[%s]\n", word);
 // find Word in Dictionary
-//    printf("Nfa = %d\n", Nfa);
     int *ptr = (int *)Nfa;
     int *ptrBuf = 0;
-//    printf("*Nfa = %d\n", *ptr);
     _Bool flgFind = 0;
     int nNameWrd = 0;
     while(ptr != 0) {
@@ -99,7 +111,6 @@ _Bool findVoc(int startWord, int lenWord, struct Ans *result) {
             ptrBuf = ptr;
             for( i = 1; i < nNameWrd + 1; i++) {
                 ptrBuf++;
-                //printf("%c", *(ptrBuf));
                 ii = i - 1;
                 if(*(word + ii) != (char)*(ptrBuf)) break;
                 else {
@@ -150,5 +161,10 @@ void execWrd(char *name, int *cfa) {
 // компилируем слово
 void compileWrd(char *name, int*cfa) {
         printf("compileWrd %s :cfa = %d/n", name, cfa);
+}
+// Обработка ошибки сброс стеков вывод ошибки на терминал
+void setError() {
+    printf("ERROR\n");
+    resetSD();
 }
 #endif

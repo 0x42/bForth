@@ -65,14 +65,17 @@ void main() {
 //    int data = popSD();
 //    printf("data = %d\n", data);
 //    printf("*PtrVoc = %d\n", *(PtrVoc-1));
-    char *num = "10";
-    int nnn = (int) 
-    if( scanf("%d", num) == 1) {
-        printf("число\n");
-    } else {
+
+/*  char *num = "qwe2qwe2";
+    char *err;
+    long nnn = strtol(num, &err, 10);
+    if( strlen(err) > 0) {
         printf("не число\n");
+    } else {
+        printf("число = %d\n", nnn);
     }
-    //interpret();
+*/
+    interpret();
     printf("\n=============================\n");
 }
 

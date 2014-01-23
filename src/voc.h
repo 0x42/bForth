@@ -108,11 +108,15 @@ int popSR() {
 // Стек данных
 //================================================
 int *SD = 0; // указатель на стек данных
+int *SDinit;
 // Инициализируем СТЕК !!!
 void sdInit() {
     SD = (int *)malloc(262144*sizeof(int)); // 1 MByte
+    SDinit = SD;
 }
-
+void resetSD() {
+    SD = SDinit;
+}
 void pushSD(int data) {
     *SD = data;
     SD++;
