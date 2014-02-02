@@ -23,6 +23,12 @@ void main() {
     int *cfaHERE = crtHERE();   // HERE
     int *cfaALLOT = crtALLOT(); // ALLOT
     int *cfaCOMPILE = crtCOMPILE(); // COMPILE
+    int *cfaDUP = crtDUP(); 	// DUP
+    int *cfaDrop = crtDROP(); 	// DROP
+    int *cfaOver = crtOVER();	// OVER
+    int *cfaRot  = crtROT(); 	// ROT
+    int *cfaSwap = crtSWAP();	// SWAP
+    int *cfaDot  = crtDOT(); 	// DOT
     int *cfaS_   = crtS_();
     int *cfa_S   = crt_S();
 
@@ -45,7 +51,7 @@ void main() {
 // -------- АДРЕСНЫЙ ИНТЕРПРИТАТОР -------------------------
 // ---------------------------------------------------------
     int step = 0;
-    pushSD(2);
+    //pushSD(2);
     printf("PtrVoc = %d\n", PtrVoc);
     while(StopForth != 1) {
         Ptr = (int*)*WPtr;

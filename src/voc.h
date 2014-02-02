@@ -108,7 +108,8 @@ int popSR() {
 // Стек данных
 //================================================
 int *SD = 0; // указатель на стек данных
-int *SDinit;
+int *SDinit = 0;
+int ptrSD = 0;
 // Инициализируем СТЕК !!!
 void sdInit() {
     SD = (int *)malloc(262144*sizeof(int)); // 1 MByte
@@ -116,14 +117,17 @@ void sdInit() {
 }
 void resetSD() {
     SD = SDinit;
+    ptrSD = 0;
 }
 void pushSD(int data) {
     *SD = data;
     SD++;
+    ptrSD++;
 }
 
 int popSD() {
     SD--;
+    ptrSD--;
     int data = *SD;
     return data;
 }

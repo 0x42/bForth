@@ -20,6 +20,8 @@ extern _Bool findVoc(int, int, struct Ans*);
 extern void execWrd(char*, int*);
 extern void compileWrd(char*, int*);
 extern _Bool checkWrd(int, int, struct Ans*);
+extern void setError();
+extern void printStackData();
 
 void interpret() {
     while(1) {
@@ -42,9 +44,14 @@ void readWords() {
         if( *(TIB + i) == '\n') {
             if( lenWord > 0) {
                 if(*(TIB + i) != ' ') 
-                    if( checkWrd(startWord, lenWord, result) == 0) break;
-                //findVoc(startWord, lenWord, result);
-            }
+                    if( checkWrd(startWord, lenWord, result) == 0) {
+		      setError();
+		      break;
+		    } else {
+		      printStackData();
+		      printf("OK\n");
+		    }
+                }
             break;
         }
         if(*(TIB + i) == ' ') {
@@ -53,29 +60,39 @@ void readWords() {
                     setError();
                     break;
                 }
-                //findVoc(startWord, lenWord, result);
-                printf("\n");
             }
             startWord = i + 1;
             lenWord = 0;
         } else lenWord++;
     }
 }
+// вывод стека на терминал
+void printStackData() {
+    printf("STACK DATA: ");
+    for(int i = 0; i < ptrSD; i++) {
+	printf("%d ", *(SDinit + i));
+    }
+    printf("\n");
+}
 // 0 - false
 // 1 - true
 _Bool checkWrd(int startWord, int lenWord, struct Ans *result) {
     _Bool find = findVoc(startWord, lenWord, result);
+        //printf("checkWrd find = %d\n", find);
     if(find == 0) {
-        printf("%s\n", "Проверка число ли это");
-        char num_str[lenWord];
+        //printf("%s\n len = %d\n", "Проверка число ли это", lenWord);
+        char num_str[lenWord + 1];
         char *err;
-        int *num;
+        int num;
         for(int i = 0; i < lenWord; i++) {
             num_str[i] = *(TIB + startWord + i);
         }
+        num_str[lenWord] = '\0';
         // проверяем число это или нет если число то кладем на стек
-        num = (int) strtol(num_str, &err, 10);
-        if(strlen(err) > 0) {
+        num = (int)strtol(num_str, &err, 10);
+        //printf("num = %d\n", num);
+	//printf("err = %s\n", err);
+	if(strlen(err) > 0) {
             return 0;
         } else {
             pushSD(num);
@@ -146,21 +163,16 @@ _Bool findVoc(int startWord, int lenWord, struct Ans *result) {
 }
 // исполняем слово простое
 void execWrd(char *name, int *cfa) {
-    //printf("%s -> execute\n", name);
-    //printf("execWrd %s :cfa = %d/n", name, cfa);
     //WPtr = cfa;
    // Ptr = (int*)*WPtr;
     Ptr = cfa;
-    //printf("Ptr = %d\n", Ptr);
     Ptr2 = (int *)*Ptr;
-    //printf("Ptr2 = %d\n", Ptr2);
     Call = (void(*)())*Ptr2;
-    //printf("Call = %d\n", Call);
     Call();
 }
 // компилируем слово
 void compileWrd(char *name, int*cfa) {
-        printf("compileWrd %s :cfa = %d/n", name, cfa);
+  printf("compileWrd %s :cfa = %d/n", name, cfa);
 }
 // Обработка ошибки сброс стеков вывод ошибки на терминал
 void setError() {

@@ -105,7 +105,6 @@ int* crtLIT() {
 // после слова Branch берем число прибавляем к текущему адресу
 // интерпритации
 // BRANCH
-
 void Branch() {
     printf("BRANCH run\n");
     WPtr++;
@@ -221,6 +220,201 @@ int* crtCOMPILE() {
     // 1 - IMMEDIATE 0 -SIMPLE
     int flag_exec = 0;
     int *cfa = crtWord(7, "COMPILE", flag_exec, 0, n_pfa, pfa);
+    return cfa;
+}
+// ====================================================
+// Дублирует значение на стеке данных
+void Dup() {
+    //printf("DUP run\n");
+    int value = popSD();
+    pushSD(value);
+    pushSD(value);
+}
+int* crtDUP() {
+    int n_pfa = 1;
+    void (**pfa)() = (void(**)())malloc(n_pfa*sizeof(void(*)()));
+    *pfa = Dup;
+    // 1 - IMMEDIATE 0 -SIMPLE
+    int flag_exec = 0;
+    int *cfa = crtWord(3, "DUP", flag_exec, 0, n_pfa, pfa);
+    return cfa;
+}
+// ====================================================
+// выкинуть значение со стека данных
+// A ->
+void Drop() {
+    popSD();
+}
+int* crtDROP() {
+    int n_pfa = 1;
+    void (**pfa)() = (void(**)())malloc(n_pfa*sizeof(void(*)()));
+    *pfa = Drop;
+    // 1 - IMMEDIATE 0 -SIMPLE
+    int flag_exec = 0;
+    int *cfa = crtWord(4, "DROP", flag_exec, 0, n_pfa, pfa);
+    return cfa;
+}
+// ====================================================
+// A,B -> A,B,A
+void Over() {
+    int value = *(SD - 2);
+    pushSD(value);
+}
+int* crtOVER() {
+    int n_pfa = 1;
+    void (**pfa)() = (void(**)())malloc(n_pfa*sizeof(void(*)()));
+    *pfa = Over;
+    // 1 - IMMEDIATE 0 -SIMPLE
+    int flag_exec = 0;
+    int *cfa = crtWord(4, "OVER", flag_exec, 0, n_pfa, pfa);
+    return cfa;
+}
+// ====================================================
+// A,B,C -> B,C,A
+void Rot() {
+    int c = popSD();
+    int b = popSD();
+    int a = popSD();
+    pushSD(b);
+    pushSD(c);
+    pushSD(a);
+}
+int* crtROT() {
+    int n_pfa = 1;
+    void (**pfa)() = (void(**)())malloc(n_pfa*sizeof(void(*)()));
+    *pfa = Rot;
+    // 1 - IMMEDIATE 0 -SIMPLE
+    int flag_exec = 0;
+    int *cfa = crtWord(3, "ROT", flag_exec, 0, n_pfa, pfa);
+    return cfa;
+}
+// ====================================================
+// A,B -> B,A
+void Swap() {
+    int b = popSD();
+    int a = popSD();
+    pushSD(b);
+    pushSD(a);
+}
+int* crtSWAP() {
+    int n_pfa = 1;
+    void (**pfa)() = (void(**)())malloc(n_pfa*sizeof(void(*)()));
+    *pfa = Swap;
+    // 1 - IMMEDIATE 0 -SIMPLE
+    int flag_exec = 0;
+    int *cfa = crtWord(4, "SWAP", flag_exec, 0, n_pfa, pfa);
+    return cfa;
+}
+// ====================================================
+// "." - снимаем значение со стека и печатает на терминал
+void Dot() {
+    int val = popSD();
+    printf("%d\n", val);
+}
+int* crtDOT() {
+    int n_pfa = 1;
+    void (**pfa)() = (void(**)())malloc(n_pfa*sizeof(void(*)()));
+    *pfa = Dot;
+    // 1 - IMMEDIATE 0 -SIMPLE
+    int flag_exec = 0;
+    int *cfa = crtWord(1, ".", flag_exec, 0, n_pfa, pfa);
+    return cfa;
+}
+// ====================================================
+// PLUS + A,B -> C
+void Plus() {
+  int a = popSD();
+  int b = popSD();
+  pushSD(a + b);
+}
+int* crtPLUS() {
+    int n_pfa = 1;
+    void (**pfa)() = (void(**)())malloc(n_pfa*sizeof(void(*)()));
+    *pfa = Plus;
+    // 1 - IMMEDIATE 0 -SIMPLE
+    int flag_exec = 0;
+    int *cfa = crtWord(1, "+", flag_exec, 0, n_pfa, pfa);
+    return cfa;
+  
+}
+// ====================================================
+// Minus - A,B -> C
+void Minus() {
+  int a = popSD();
+  int b = popSD();
+  pushSD(a + b);
+}
+int* crtMINUS() {
+    int n_pfa = 1;
+    void (**pfa)() = (void(**)())malloc(n_pfa*sizeof(void(*)()));
+    *pfa = Minus;
+    // 1 - IMMEDIATE 0 -SIMPLE
+    int flag_exec = 0;
+    int *cfa = crtWord(1, "-", flag_exec, 0, n_pfa, pfa);
+    return cfa;
+}
+// ====================================================
+// Minus - A,B -> C
+void Minus() {
+  int a = popSD();
+  int b = popSD();
+  pushSD(a - b);
+}
+int* crtMINUS() {
+    int n_pfa = 1;
+    void (**pfa)() = (void(**)())malloc(n_pfa*sizeof(void(*)()));
+    *pfa = Minus;
+    // 1 - IMMEDIATE 0 -SIMPLE
+    int flag_exec = 0;
+    int *cfa = crtWord(1, "-", flag_exec, 0, n_pfa, pfa);
+    return cfa;
+}
+// ====================================================
+// Multi * A,B -> C
+void Multi() {
+  int a = popSD();
+  int b = popSD();
+  pushSD(a * b);
+}
+int* crtMULTI() {
+    int n_pfa = 1;
+    void (**pfa)() = (void(**)())malloc(n_pfa*sizeof(void(*)()));
+    *pfa = Multi;
+    // 1 - IMMEDIATE 0 -SIMPLE
+    int flag_exec = 0;
+    int *cfa = crtWord(1, "*", flag_exec, 0, n_pfa, pfa);
+    return cfa;
+}
+// ====================================================
+// Division / A,B -> C
+void Division() {
+  int a = popSD();
+  int b = popSD();
+  pushSD(a / b);
+}
+int* crtDIVISION() {
+    int n_pfa = 1;
+    void (**pfa)() = (void(**)())malloc(n_pfa*sizeof(void(*)()));
+    *pfa = Division;
+    // 1 - IMMEDIATE 0 -SIMPLE
+    int flag_exec = 0;
+    int *cfa = crtWord(1, "/", flag_exec, 0, n_pfa, pfa);
+    return cfa;
+}
+// ====================================================
+// Division MOD A,B -> C
+void Mod() {
+  int a = popSD();
+  int b = popSD();
+  pushSD(a % b);
+}
+int* crtMOD() {
+    int n_pfa = 1;
+    void (**pfa)() = (void(**)())malloc(n_pfa*sizeof(void(*)()));
+    *pfa = Mod;
+    // 1 - IMMEDIATE 0 -SIMPLE
+    int flag_exec = 0;
+    int *cfa = crtWord(3, "MOD", flag_exec, 0, n_pfa, pfa);
     return cfa;
 }
 // ====================================================
