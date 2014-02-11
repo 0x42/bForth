@@ -4,6 +4,7 @@
     прочитать слово в буфер
     найти его в словаре -> скомпилировать/интерпретировать
     проверить число ли это -> положить на стек
+    Слово не может быть больше NTIB - 1
 */
 #ifndef INTERPRET_H
 #define INTERPRET_H
@@ -11,26 +12,45 @@
 #include <stdio.h>
 #include "voc.h"
 
-struct Ans {
-    char* word_name;
-    int word_len;
-    int word_state;
+// слово найденное в входном потоке
+struct WordTIB {
+    char* name;
+    int len;
+    int state;
     int *cfa;
 };
-
-extern void readWords();
-extern _Bool findVoc(int, int, struct Ans*);
+// @return возвращает позицию с которой 
+// начать след чтение слова
+extern int readWords(int pos, struct WordTIB *word);
+extern _Bool findVoc(int, int, struct WordTIB *word);
 extern void execWrd(char*, int*);
 extern void compileWrd(char*, int*);
-extern _Bool checkWrd(int, int, struct Ans*);
+extern _Bool checkWrd(int, int, struct WordTIB *word);
 extern void setError();
 extern void printStackData();
 
 void interpret() {
+    struct WordTIB *word = (struct WordTIB*)malloc(1*sizeof(struct WordTIB));
+    word->name = (char*)malloc(NTIB);
+    memset(word->name, 0, NTIB); // обнуляем сроку
+    word->len = 0;
+    word->state = 0;
+    word->cfa = 0;
+    int endTIB = 1;
     while(1) {
         printf("> ");
         if(fgets(TIB, NTIB, stdin) != NULL) {
-            readWords();
+            int pos = 0;
+            while(pos != NTIB) {
+                printf("%d\n", pos);
+                pos = readWords(pos, word);
+                printf("%s\n", word->name);
+                memset(word->name, 0, NTIB); // обнуляем сроку
+                word->len = 0;
+                word->state = 0;
+                word->cfa = 0;
+            }
+            //printf("word = %s\n", word);
         } else {
             printf("ERROR\n");
         }
@@ -39,34 +59,33 @@ void interpret() {
 // Читает слово в входном потоке-> ищет в словаре еслли находит исполняет если не находит
 // проверяет число ли это если да то кладет на стек и переходит к чтению след слова
 // иначе кидает ошибку
-void readWords() {
+int readWords(int pos, struct WordTIB* word) {
     int lenWord = 0;
     int startWord = 0;
-    struct Ans *result = (struct Ans*)malloc(sizeof(result));
-    for(int i = 0; i < NTIB; i++) {
-        if( *(TIB + i) == '\n') {
-            if( lenWord > 0) {
-                if(*(TIB + i) != ' ') 
-                    if( checkWrd(startWord, lenWord, result) == 0) {
-		                setError();
-		                break;
-		            } else {
-		                printStackData();
-		                printf("OK\n");
-		            }
-            }
-            break;
+    char symbol;
+    
+    for(int i = pos; i < NTIB; i++) {
+        symbol = *(TIB + i);
+        if( symbol != ' ' && symbol != '\n') {
+            *(word->name + word->len) = symbol;
+            word->len++;
         }
-        if(*(TIB + i) == ' ') {
-            if( lenWord != 0) {
-                if(checkWrd(startWord, lenWord, result) == 0) {
-                    setError();
-                    break;
-                }
+        
+        if( symbol == '\n') {
+            if( word->len > 0) {
+                return i;
             }
-            startWord = i + 1;
-            lenWord = 0;
-        } else lenWord++;
+            
+        }
+        if( symbol == ' ') {
+            if( word->len != 0) {
+             //   if(checkWrd(startWord, lenWord, result) == 0) {
+             //       setError();
+             //       break;
+             //   }
+                return i;
+            }
+        }
     }
 }
 // вывод стека на терминал
@@ -79,7 +98,7 @@ void printStackData() {
 }
 // 0 - false
 // 1 - true
-_Bool checkWrd(int startWord, int lenWord, struct Ans *result) {
+_Bool checkWrd(int startWord, int lenWord, struct WordTIB *result) {
     _Bool find = findVoc(startWord, lenWord, result);
         //printf("checkWrd find = %d\n", find);
     if(find == 0) {
@@ -107,7 +126,7 @@ _Bool checkWrd(int startWord, int lenWord, struct Ans *result) {
 }
 // 0 - не найдено в словаре
 // 1 - найдено
-_Bool findVoc(int startWord, int lenWord, struct Ans *result) {
+_Bool findVoc(int startWord, int lenWord, struct WordTIB *result) {
     _Bool ans = 0;
     int endWord = startWord + lenWord;
     char *word = (char *)malloc(lenWord);

@@ -75,8 +75,7 @@ void main() {
 //    int data = popSD();
 //    printf("data = %d\n", data);
 //    printf("*PtrVoc = %d\n", *(PtrVoc-1));
-
-/*  char *num = "qwe2qwe2";
+/*
     char *err;
     long nnn = strtol(num, &err, 10);
     if( strlen(err) > 0) {
