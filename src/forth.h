@@ -342,22 +342,6 @@ int* crtPLUS() {
 void Minus() {
   int a = popSD();
   int b = popSD();
-  pushSD(a + b);
-}
-int* crtMINUS() {
-    int n_pfa = 1;
-    void (**pfa)() = (void(**)())malloc(n_pfa*sizeof(void(*)()));
-    *pfa = Minus;
-    // 1 - IMMEDIATE 0 -SIMPLE
-    int flag_exec = 0;
-    int *cfa = crtWord(1, "-", flag_exec, 0, n_pfa, pfa);
-    return cfa;
-}
-// ====================================================
-// Minus - A,B -> C
-void Minus() {
-  int a = popSD();
-  int b = popSD();
   pushSD(a - b);
 }
 int* crtMINUS() {
@@ -418,9 +402,9 @@ int* crtMOD() {
     return cfa;
 }
 // ====================================================
-// CONSTANT 
-//void Constant() {
-//
+// 1+ -> : LIT 1 + ;
+//void OnePlus() {
+    
 //}
 //int* crtCONSTANT() {
 //    

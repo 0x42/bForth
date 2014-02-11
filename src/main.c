@@ -29,6 +29,8 @@ void main() {
     int *cfaRot  = crtROT(); 	// ROT
     int *cfaSwap = crtSWAP();	// SWAP
     int *cfaDot  = crtDOT(); 	// DOT
+    int *cfaPlus = crtPLUS();   // +
+    int *cfaMinus = crtMINUS();     // -
     int *cfaS_   = crtS_();
     int *cfa_S   = crt_S();
 
@@ -37,6 +39,8 @@ void main() {
     int *cfaTEST2 = crtTEST2();
     //int *cfaGoTest = crtGOTEST(cfaS_, cfaHERE, (int*) cfa_S);
     int *cfaGoTest = crtGOTEST(cfaS_, cfaCOMPILE, (int*)42, (int*) cfa_S);
+    //--------------------------------------------------------------
+    int *cfaOnePlus = crtONEPLUS(cfaS_, cfaLIT, (int*)1, cfaPlus, cfa_S);
     int *cfaStart = crtStart(cfaS_, cfaGoTest, cfaTEST2);
     // ----- Initialization -----------------
     int *prog = (int*)malloc(2*sizeof(int));

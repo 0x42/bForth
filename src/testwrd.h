@@ -61,5 +61,16 @@ int* crtGOTEST(int *w1, int *w2, int *w3, int *w4) {
     return cfa;
 }
 // ====================================================
-
+int* crtONEPLUS(int *w1, int *w2, int *w3, int *w4, int *w5) {
+    int n_pfa = 4;
+    void (**pfa)() = (void(**)())malloc(n_pfa*sizeof(void(*)()));
+    *pfa = (void(*)())w2;
+    *(pfa + 1) = (void(*)())w3;
+    *(pfa + 2) = (void(*)())w4;
+    *(pfa + 3) = (void(*)())w5;
+        // 1 - IMMEDIATE 0 -SIMPLE
+    int flag_exec = 0;
+    int *cfa = crtWord(2, "1+", flag_exec, (int *)w1, n_pfa, pfa);
+    return cfa;
+}
 #endif

@@ -45,13 +45,13 @@ void readWords() {
             if( lenWord > 0) {
                 if(*(TIB + i) != ' ') 
                     if( checkWrd(startWord, lenWord, result) == 0) {
-		      setError();
-		      break;
-		    } else {
-		      printStackData();
-		      printf("OK\n");
-		    }
-                }
+		                setError();
+		                break;
+		            } else {
+		                printStackData();
+		                printf("OK\n");
+		            }
+            }
             break;
         }
         if(*(TIB + i) == ' ') {
