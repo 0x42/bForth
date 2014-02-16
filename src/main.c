@@ -30,10 +30,9 @@ void main() {
     int *cfaSwap = crtSWAP();	// SWAP
     int *cfaDot  = crtDOT(); 	// DOT
     int *cfaPlus = crtPLUS();   // +
-    int *cfaMinus = crtMINUS();     // -
+    int *cfaMinus = crtMINUS(); // -
     int *cfaS_   = crtS_();
     int *cfa_S   = crt_S();
-
     int *cfaTEST = crtTEST();
     int *cfaTEST1 = crtTEST1();
     int *cfaTEST2 = crtTEST2();

@@ -19,70 +19,80 @@ struct WordTIB {
     int state;
     int *cfa;
 };
+
+void resetWordTIB(struct WordTIB *word) {
+    memset(word->name, 0, NTIB); // обнуляем сроку
+    word->len = 0;
+    word->state = 0;
+    word->cfa = 0;
+};
 // @return возвращает позицию с которой 
 // начать след чтение слова
-extern int readWords(int pos, struct WordTIB *word);
-extern _Bool findVoc(int, int, struct WordTIB *word);
-extern void execWrd(char*, int*);
-extern void compileWrd(char*, int*);
-extern _Bool checkWrd(int, int, struct WordTIB *word);
+extern int readWords(int pos, struct WordTIB *word, int *flag);
+extern _Bool findVoc(struct WordTIB *word);
+extern void execWord(struct WordTIB *word);
+extern void compileWord(struct WordTIB *word);
+extern _Bool checkWord(struct WordTIB *word);
 extern void setError();
 extern void printStackData();
 
 void interpret() {
     struct WordTIB *word = (struct WordTIB*)malloc(1*sizeof(struct WordTIB));
     word->name = (char*)malloc(NTIB);
-    memset(word->name, 0, NTIB); // обнуляем сроку
-    word->len = 0;
-    word->state = 0;
-    word->cfa = 0;
+    resetWordTIB(word);
     int endTIB = 1;
+    // 1 последние слово в потоке / 0 - читать дальше
+    int lastWord = 0;
+    // 1 найдено слово 0 не найдено
+    int flagFind = 0;
     while(1) {
         printf("> ");
-        if(fgets(TIB, NTIB, stdin) != NULL) {
+        if(fgets(TIB, NTIB, stdin) != 0) {
             int pos = 0;
             while(pos != NTIB) {
-                printf("%d\n", pos);
-                pos = readWords(pos, word);
-                printf("%s\n", word->name);
-                memset(word->name, 0, NTIB); // обнуляем сроку
-                word->len = 0;
-                word->state = 0;
-                word->cfa = 0;
+                pos = readWords(pos, word, &lastWord);
+                printf("read[%s] pos = %d \n", word->name, pos);
+                if(word->len > 0) {
+                    if( checkWord(word) == 1) {
+                        if( STATE == 0 && word->cfa > 0) execWord(word);
+                        else if (STATE == 1) compileWord(word);
+                    } else {
+                        setError();
+                        resetWordTIB(word);
+                        break;
+                    }
+                }
+                resetWordTIB(word);
+                if(lastWord == 1) {
+                    lastWord = 0; 
+                    break; 
+                }
             }
-            //printf("word = %s\n", word);
+            printStackData();
         } else {
-            printf("ERROR\n");
+            lastWord = 0;
+            setError();
         }
     }
 }
-// Читает слово в входном потоке-> ищет в словаре еслли находит исполняет если не находит
-// проверяет число ли это если да то кладет на стек и переходит к чтению след слова
-// иначе кидает ошибку
-int readWords(int pos, struct WordTIB* word) {
+// Читает слово в входном потоке -> найденное слово сохраняем в струтуру word
+// @return - возв позицию с оторой надо читать след слово
+int readWords(int pos, struct WordTIB* word, int *flag) {
     int lenWord = 0;
     int startWord = 0;
     char symbol;
-    
     for(int i = pos; i < NTIB; i++) {
         symbol = *(TIB + i);
         if( symbol != ' ' && symbol != '\n') {
             *(word->name + word->len) = symbol;
             word->len++;
         }
-        
         if( symbol == '\n') {
-            if( word->len > 0) {
-                return i;
-            }
-            
+            *flag = 1;
+            return i;
         }
         if( symbol == ' ') {
             if( word->len != 0) {
-             //   if(checkWrd(startWord, lenWord, result) == 0) {
-             //       setError();
-             //       break;
-             //   }
                 return i;
             }
         }
@@ -98,22 +108,16 @@ void printStackData() {
 }
 // 0 - false
 // 1 - true
-_Bool checkWrd(int startWord, int lenWord, struct WordTIB *result) {
-    _Bool find = findVoc(startWord, lenWord, result);
+_Bool checkWord(struct WordTIB *word) {
+    _Bool find = findVoc(word);
+//    return find; 
         //printf("checkWrd find = %d\n", find);
     if(find == 0) {
         //printf("%s\n len = %d\n", "Проверка число ли это", lenWord);
-        char num_str[lenWord + 1];
         char *err;
         int num;
-        for(int i = 0; i < lenWord; i++) {
-            num_str[i] = *(TIB + startWord + i);
-        }
-        num_str[lenWord] = '\0';
         // проверяем число это или нет если число то кладем на стек
-        num = (int)strtol(num_str, &err, 10);
-        //printf("num = %d\n", num);
-	//printf("err = %s\n", err);
+        num = (int)strtol(word->name, &err, 10);
 	if(strlen(err) > 0) {
             return 0;
         } else {
@@ -126,16 +130,8 @@ _Bool checkWrd(int startWord, int lenWord, struct WordTIB *result) {
 }
 // 0 - не найдено в словаре
 // 1 - найдено
-_Bool findVoc(int startWord, int lenWord, struct WordTIB *result) {
+_Bool findVoc(struct WordTIB *word) {
     _Bool ans = 0;
-    int endWord = startWord + lenWord;
-    char *word = (char *)malloc(lenWord);
-    int i = 0;
-// read Word
-    for( startWord; startWord < endWord; startWord++) {
-        *(word + i) = *(TIB + startWord);
-        i++;
-    }
 // find Word in Dictionary
     int *ptr = (int *)Nfa;
     int *ptrBuf = 0;
@@ -145,13 +141,16 @@ _Bool findVoc(int startWord, int lenWord, struct WordTIB *result) {
         nNameWrd = *ptr - 80;
         // Если длины слов совпадают то проверяем посимвольно 
         // иначе к след слову
-        if(lenWord == nNameWrd) {
+        if(word->len == nNameWrd) {
+//            printf("findVoc->n = %d\n", nNameWrd);
             int ii;
             ptrBuf = ptr;
-            for( i = 1; i < nNameWrd + 1; i++) {
+            for(int i = 1; i < nNameWrd + 1; i++) {
                 ptrBuf++;
                 ii = i - 1;
-                if(*(word + ii) != (char)*(ptrBuf)) break;
+//                printf("stdin %c\n", *(word->name + ii));
+//                printf("tib %c\n", (char)*(ptrBuf));
+                if(*(word->name + ii) != (char)*(ptrBuf)) break;
                 else {
                     // Если был проверн последние символы и они совпали 
                     // то слова одинаковые
@@ -167,38 +166,35 @@ _Bool findVoc(int startWord, int lenWord, struct WordTIB *result) {
         ptr = (int*)(*ptr); // берем поле c NFA след слова
     }
     if (flgFind == 1) {
-//        printf("[%s]find in voc\n", word);
-        int *cfa  = (ptr + nNameWrd + 3);
-        // printf("cfa = %d\n", cfa);
-        // printf("*cfa = %d\n", *cfa);
-        int *pfa = (int *) *cfa;
-        // printf("*pfa = %d\n", *pfa);
-        // printf("test() = %d\n", test);
-        if( STATE == 0) execWrd(word, cfa);
-        else if (STATE == 1) compileWrd(word, cfa);
+//        printf("[%s]find in voc\n", word->name);
+//        int *cfa  = (ptr + nNameWrd + 3);
+//        int *pfa = (int *) *cfa;
+        word->cfa  = (ptr + nNameWrd + 3);
         ans = 1;
     } else {
-//        printf("[%s] doesn't find in voc\n", word);
+//        printf("[%s] doesn't find in voc\n", word->name);
+        word->cfa = 0;
         ans = 0;
     }
     return ans;
 }
 // исполняем слово простое
-void execWrd(char *name, int *cfa) {
-    //WPtr = cfa;
-   // Ptr = (int*)*WPtr;
-    Ptr = cfa;
+void execWord(struct WordTIB *word) {
+    // WPtr = cfa;
+    // Ptr = (int*)*WPtr;
+    Ptr = word->cfa;
     Ptr2 = (int *)*Ptr;
     Call = (void(*)())*Ptr2;
     Call();
 }
 // компилируем слово
-void compileWrd(char *name, int*cfa) {
-  printf("compileWrd %s :cfa = %d/n", name, cfa);
+void compileWord(struct WordTIB *word) {
+  printf("compileWrd %s :cfa = %d/n", word->name, word->cfa);
 }
 // Обработка ошибки сброс стеков вывод ошибки на терминал
 void setError() {
     printf("ERROR\n");
     resetSD();
 }
+
 #endif
