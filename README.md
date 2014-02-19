@@ -1,4 +1,8 @@
 bForth
 ======
 
-forth implementation on C(only for education)
+Forth implementation on C(only for education)
+> 1 2 3 + +
+> .
+6 OK
+>  
